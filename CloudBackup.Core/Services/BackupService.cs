@@ -22,18 +22,25 @@ public class BackupService : IBackupService
 
     public async Task PerformBackupAsync(AppConfig config)
     {
-        var targetPath = OperatingSystem.IsWindows()
+        var sourceName = new DirectoryInfo(config.SourceFolder).Name;
+        if (string.IsNullOrEmpty(sourceName))
+            sourceName = "backup";
+
+        var targetRoot = OperatingSystem.IsWindows()
             ? Path.Combine(config.DriveLetter + "\\", _settings.BackupSubfolderName)
             : Path.Combine(config.MountPoint, _settings.BackupSubfolderName);
 
+        var targetPath = Path.Combine(targetRoot, sourceName);
+
+        // CreateDirectory НЕ очищает папку, если она уже есть, то гарантирует, что она существует.
         Directory.CreateDirectory(targetPath);
 
         await CopyDirectoryAsync(config.SourceFolder, targetPath);
     }
 
-    private async Task CopyDirectoryAsync(string sourceDir, string targetDir)
+    private static async Task CopyDirectoryAsync(string sourceDir, string targetDir)
     {
-        Directory.CreateDirectory(targetDir);
+        Directory.CreateDirectory(targetDir);   // Не трогает существующее.
 
         foreach (var file in Directory.GetFiles(sourceDir))
         {
@@ -47,7 +54,7 @@ public class BackupService : IBackupService
                 var targetInfo = new FileInfo(targetFile);
 
                 if (sourceInfo.LastWriteTime <= targetInfo.LastWriteTime && sourceInfo.Length == targetInfo.Length)
-                    shouldCopy = false;
+                    shouldCopy = false;   // Пропуск идентичных файлов.
             }
 
             if (shouldCopy)

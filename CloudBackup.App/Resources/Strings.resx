@@ -190,4 +190,7 @@
   <data name="Status_EmailInvalidFormat" xml:space="preserve">
   <value>Email format looks invalid. Example: user@mail.ru</value>
 </data>
+  <data name="Footer_Copyright" xml:space="preserve">
+  <value>© HACKcAt 2026-{0}. For inquiries: hackcat@yandex.ru. All rights reserved.</value>
+</data>
 </root>

@@ -72,4 +72,5 @@
   <data name="Status_EmailEmpty" xml:space="preserve"><value>Введите Email от аккаунта Mail.ru.</value></data>
   <data name="Status_PasswordEmpty" xml:space="preserve"><value>Введите пароль для внешнего приложения.</value></data>
   <data name="Status_EmailInvalidFormat" xml:space="preserve"><value>Формат Email выглядит неверным. Пример: user@mail.ru</value></data>
+  <data name="Footer_Copyright" xml:space="preserve"><value>© HACKcAt 2026-{0}. По всем вопросам обращаться на hackcat@yandex.ru. Все права защищены.</value></data>
 </root>

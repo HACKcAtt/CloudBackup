@@ -22,16 +22,38 @@ public class WebDavService : IWebDavService
     }
 
     /// <summary>
-    /// Создает PROPFIND-запрос с авторизацией (DRY: используется в TestConnection и GetFreeSpace).
+    /// Создаёт PROPFIND-запрос с авторизацией.
+    /// Если <paramref name="requestQuota"/> == true — добавляет в тело запроса
+    /// явный запрос <c>quota-available-bytes</c> и <c>quota-used-bytes</c>.
+    /// Mail.ru (и многие другие WebDAV-серверы) отдают квоту, только когда её явно запрашивают в теле PROPFIND. Пустой PROPFIND возвращает
+    /// лишь обязательные свойства (displayname, resourcetype) без квоты.
     /// </summary>
-    private HttpRequestMessage CreatePropfindRequest(AppConfig config, string? url = null)
+    private HttpRequestMessage CreatePropfindRequest(AppConfig config, bool requestQuota = false)
     {
-        var request = new HttpRequestMessage(new HttpMethod(_settings.PropfindMethod), url ?? _settings.WebDavUrl);
+        var request = new HttpRequestMessage(
+            new HttpMethod(_settings.PropfindMethod),
+            _settings.WebDavUrl);
 
-        var authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{config.Email}:{config.AppPassword}"));
+        var authToken = Convert.ToBase64String(
+            Encoding.ASCII.GetBytes($"{config.Email}:{config.AppPassword}"));
 
         request.Headers.Authorization = new AuthenticationHeaderValue(_settings.AuthScheme, authToken);
         request.Headers.Add("Depth", _settings.DepthHeader);
+
+        if (requestQuota)
+        {
+            const string propfindBody = """
+                                        <?xml version="1.0" encoding="utf-8"?>
+                                        <d:propfind xmlns:d="DAV:">
+                                          <d:prop>
+                                            <d:quota-available-bytes/>
+                                            <d:quota-used-bytes/>
+                                          </d:prop>
+                                        </d:propfind>
+                                        """;
+
+            request.Content = new StringContent(propfindBody, Encoding.UTF8, "application/xml");
+        }
 
         return request;
     }
@@ -54,7 +76,7 @@ public class WebDavService : IWebDavService
     {
         try
         {
-            using var request = CreatePropfindRequest(config);
+            using var request = CreatePropfindRequest(config, requestQuota: true);
             using var response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
                 return -1;
@@ -62,13 +84,11 @@ public class WebDavService : IWebDavService
             var content = await response.Content.ReadAsStringAsync();
             var xml = XDocument.Parse(content);
 
-            var quotaElement = xml.Descendants()
-                .FirstOrDefault(x => x.Name.LocalName == _settings.QuotaAvailableElementName);
+            var quotaElement = xml.Descendants().FirstOrDefault(x => x.Name.LocalName == _settings.QuotaAvailableElementName);
 
-            if (quotaElement != null && long.TryParse(quotaElement.Value, out var freeBytes))
-                return freeBytes;
-
-            return -1;
+            return quotaElement != null && long.TryParse(quotaElement.Value, out var freeBytes)
+                ? freeBytes
+                : -1;
         }
         catch
         {
@@ -81,8 +101,7 @@ public class WebDavService : IWebDavService
         if (OperatingSystem.IsWindows())
         {
             var result = await Cli.Wrap(_settings.WindowsMountCommand)
-                .WithArguments(
-                    $"use {config.DriveLetter} {_settings.WebDavUrl} /user:{config.Email} {config.AppPassword} /persistent:yes")
+                .WithArguments($"use {config.DriveLetter} {_settings.WebDavUrl} /user:{config.Email} {config.AppPassword} /persistent:yes")
                 .WithValidation(CommandResultValidation.None)
                 .ExecuteBufferedAsync();
 
@@ -95,8 +114,7 @@ public class WebDavService : IWebDavService
             {
                 Directory.CreateDirectory(config.MountPoint);
                 var result = await Cli.Wrap(_settings.LinuxMountCommand)
-                    .WithArguments(
-                        $"-t {_settings.LinuxFileSystemType} {_settings.WebDavUrl} {config.MountPoint}")
+                    .WithArguments($"-t {_settings.LinuxFileSystemType} {_settings.WebDavUrl} {config.MountPoint}")
                     .WithValidation(CommandResultValidation.None)
                     .ExecuteBufferedAsync();
 
@@ -122,7 +140,7 @@ public class WebDavService : IWebDavService
 
             return result.ExitCode == 0;
         }
-        
+
         if (OperatingSystem.IsLinux())
         {
             var result = await Cli.Wrap(_settings.LinuxUnmountCommand)
@@ -144,8 +162,8 @@ public class WebDavService : IWebDavService
         if (!OperatingSystem.IsLinux())
             return Task.FromResult(false);
 
-        var exists = Directory.Exists(config.MountPoint) && Directory.EnumerateFileSystemEntries(config.MountPoint).Any();
+        var isExist = Directory.Exists(config.MountPoint) && Directory.EnumerateFileSystemEntries(config.MountPoint).Any();
 
-        return Task.FromResult(exists);
+        return Task.FromResult(isExist);
     }
 }

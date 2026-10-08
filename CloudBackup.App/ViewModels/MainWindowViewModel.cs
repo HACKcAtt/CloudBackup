@@ -86,6 +86,7 @@ public partial class MainWindowViewModel : ViewModelBase
             OnPropertyChanged(nameof(StatusMessage));
             OnPropertyChanged(nameof(FreeSpaceInfo));
             OnPropertyChanged(nameof(SourceSizeInfo));
+            OnPropertyChanged(nameof(ViewModels.MainWindowViewModel.FooterCopyright));
         };
     }
 
@@ -188,7 +189,7 @@ public partial class MainWindowViewModel : ViewModelBase
             if (free > 0)
                 SetFreeSpace("Info_FreeSpace", FormatBytes(free));
             else
-                SetFreeSpace("Info_FreeSpaceUnknown");
+                ClearFreeSpace();
 
             SetStatus("Status_ConnectionOk");
         }
@@ -424,4 +425,9 @@ public partial class MainWindowViewModel : ViewModelBase
     /// Простая проверка формата Email.
     /// </summary>
     private static bool IsValidEmail(string email) => System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    
+    /// <summary>
+    /// Нижний колонтитул с копирайтом и текущим годом.
+    /// </summary>
+    public static string FooterCopyright => LocalizationService.Format("Footer_Copyright", DateTime.Now.Year);
 }

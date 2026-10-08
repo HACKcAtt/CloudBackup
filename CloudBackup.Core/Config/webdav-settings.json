@@ -6,7 +6,7 @@
   "depthHeader": "0",
   "quotaAvailableElementName": "quota-available-bytes",
   "requestTimeoutSeconds": 30,
-  "backupSubfolderName": "Backup",
+  "backupSubfolderName": "CloudBackup",
   "authScheme": "Basic",
   "windowsMountCommand": "net",
   "linuxMountCommand": "mount",

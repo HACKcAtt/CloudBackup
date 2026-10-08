@@ -398,5 +398,11 @@ namespace CloudBackup.App.Resources {
                 return ResourceManager.GetString("Status_EmailInvalidFormat", resourceCulture);
             }
         }
+        
+        internal static string Footer_Copyright {
+            get {
+                return ResourceManager.GetString("Footer_Copyright", resourceCulture);
+            }
+        }
     }
 }
