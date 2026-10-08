@@ -37,7 +37,6 @@ public class BackupWorker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            // Если конфиг не настроен, то ждать.
             if (!_config.IsConfigured)
             {
                 _logger.LogWarning("Конфигурация не найдена. Ожидание настройки через UI...");
@@ -72,9 +71,15 @@ public class BackupWorker : BackgroundService
                 }
                 else
                 {
-                    await _backupService.PerformBackupAsync(_config);
+                    await _backupService.PerformBackupAsync(_config, stoppingToken);
                     _logger.LogInformation("Бэкап успешно завершён.");
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // Служба останавливается — это нормально, не логгировать как ошибку.
+                _logger.LogInformation("Получен сигнал остановки. Завершение работы.");
+                break;
             }
             catch (Exception ex)
             {

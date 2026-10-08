@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace CloudBackup.App;
 
-public partial class App : Application
+public class App : Application
 {
     public static IHost? HostInstance { get; set; }
 

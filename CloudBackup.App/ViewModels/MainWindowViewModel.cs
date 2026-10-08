@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -59,6 +60,11 @@ public partial class MainWindowViewModel : ViewModelBase
             ? LocalizationService.Get(_sourceSizeKey)
             : LocalizationService.Format(_sourceSizeKey, _sourceSizeArgs);
 
+    /// <summary>
+    /// Нижний колонтитул с копирайтом и текущим годом.
+    /// </summary>
+    public static string FooterCopyright => LocalizationService.Format("Footer_Copyright", DateTime.Now.Year);
+
     public ObservableCollection<string> IntervalKeys { get; } =
     [
         "Interval_1Minute", "Interval_30Minutes", "Interval_1Hour",
@@ -80,17 +86,18 @@ public partial class MainWindowViewModel : ViewModelBase
         _loc.DetectSystemLanguageOrDefault();
         _ = LoadExistingConfigAsync();
 
-        // При смене языка уведомляем UI, чтобы вычисляемые свойства перечитались.
+        // При смене языка уведомление UI, чтобы вычисляемые свойства перечитались.
         _loc.PropertyChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(StatusMessage));
             OnPropertyChanged(nameof(FreeSpaceInfo));
             OnPropertyChanged(nameof(SourceSizeInfo));
-            OnPropertyChanged(nameof(ViewModels.MainWindowViewModel.FooterCopyright));
+            OnPropertyChanged(nameof(FooterCopyright));
         };
     }
 
     // Хелперы для установки локализованных значений.
+
     private void SetStatus(string key)
     {
         _statusKey = key;
@@ -134,6 +141,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     // Смена языка.
+
     [RelayCommand]
     private void SwitchToRussian() => _loc.SetLanguage("ru");
 
@@ -141,6 +149,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void SwitchToEnglish() => _loc.SetLanguage("en");
 
     // Основные команды.
+
     [RelayCommand]
     private async Task SelectFolder()
     {
@@ -220,10 +229,11 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+        var validationError = ValidateCredentials();
+        if (validationError is not null)
         {
-            SetStatus("Status_EmailPasswordEmpty");
-            await ShowAlertAsync("Alert_Title_Error", "Status_EmailPasswordEmpty", Icon.Error);
+            SetStatus(validationError);
+            await ShowAlertAsync("Alert_Title_Error", validationError, Icon.Error);
             return;
         }
 
@@ -288,7 +298,7 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        var started = await _serviceInstaller.StartServiceAsync();
+        var started = await ServiceInstaller.StartServiceAsync();
         SetStatus(started ? "Status_ServiceInstalledOk" : "Status_ServiceInstalledFailed");
 
         _worker.ReloadConfig();
@@ -308,7 +318,7 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        if (!await _serviceInstaller.IsServiceInstalledAsync())
+        if (!await ServiceInstaller.IsServiceInstalledAsync())
         {
             SetStatus("Status_ServiceNotInstalled");
             IsBusy = false;
@@ -318,14 +328,16 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (!ServiceInstaller.IsRunningAsAdmin())
         {
-            ServiceInstaller.RestartAsAdmin(["--install-service-as-admin"]);
             SetStatus("Status_AdminRequired");
+            ServiceInstaller.RestartAsAdmin(["--uninstall-service-as-admin"]);
             IsBusy = false;
             return;
         }
 
         var isSuccessfullyUninstalled = await _serviceInstaller.UninstallServiceAsync();
-        SetStatus(isSuccessfullyUninstalled ? "Status_ServiceUninstalled" : "Status_ServiceUninstallError");
+        SetStatus(isSuccessfullyUninstalled
+            ? "Status_ServiceUninstalled"
+            : "Status_ServiceUninstallError");
         IsBusy = false;
     }
 
@@ -343,7 +355,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (await _serviceInstaller.IsServiceRunningAsync())
                 SetStatus("Status_ServiceAlreadyRunning");
-            else if (await _serviceInstaller.IsServiceInstalledAsync())
+            else if (await ServiceInstaller.IsServiceInstalledAsync())
                 SetStatus("Status_ServiceInstalledButStopped");
         }
     }
@@ -388,7 +400,7 @@ public partial class MainWindowViewModel : ViewModelBase
         2592000 => "Interval_30Days",
         _ => "Interval_1Hour"
     };
-    
+
     private static async Task ShowAlertAsync(string titleKey, string messageKey, Icon icon = Icon.Info)
     {
         var box = MessageBoxManager.GetMessageBoxStandard(
@@ -398,7 +410,7 @@ public partial class MainWindowViewModel : ViewModelBase
             icon);
         await box.ShowAsync();
     }
-    
+
     /// <summary>
     /// Проверяет Email и пароль. Возвращает null, если всё валидно, иначе — ключ локализации с описанием проблемы.
     /// </summary>
@@ -418,16 +430,11 @@ public partial class MainWindowViewModel : ViewModelBase
         if (passwordEmpty)
             return "Status_PasswordEmpty";
 
-        return !IsValidEmail(Email) ? "Status_EmailInvalidFormat" : null;
+        return IsValidEmail(Email) ? null : "Status_EmailInvalidFormat";
     }
 
     /// <summary>
     /// Простая проверка формата Email.
     /// </summary>
-    private static bool IsValidEmail(string email) => System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-    
-    /// <summary>
-    /// Нижний колонтитул с копирайтом и текущим годом.
-    /// </summary>
-    public static string FooterCopyright => LocalizationService.Format("Footer_Copyright", DateTime.Now.Year);
+    private static bool IsValidEmail(string email) => Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 }

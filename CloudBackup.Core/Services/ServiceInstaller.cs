@@ -44,11 +44,11 @@ public class ServiceInstaller
         }
         catch
         {
-            // Пользователь отказался от UAC
+            // Пользователь отказался от UAC.
         }
     }
 
-    public async Task<bool> IsServiceInstalledAsync()
+    public static async Task<bool> IsServiceInstalledAsync()
     {
         if (!OperatingSystem.IsWindows()) return false;
 
@@ -64,12 +64,8 @@ public class ServiceInstaller
     {
         if (!OperatingSystem.IsWindows()) return false;
 
-        var result = await Cli.Wrap("sc.exe")
-            .WithArguments($"query {ServiceName}")
-            .WithValidation(CommandResultValidation.None)
-            .ExecuteBufferedAsync();
-
-        return result.StandardOutput.Contains("RUNNING");
+        var state = await GetServiceStateAsync();
+        return state == "Running";
     }
 
     public async Task<bool> InstallServiceAsync()
@@ -88,7 +84,7 @@ public class ServiceInstaller
             .WithValidation(CommandResultValidation.None)
             .ExecuteBufferedAsync();
 
-        await Task.Delay(1500); // Ждать освобождение имени.
+        await Task.Delay(1500); // Ждать освобождения имени.
 
         // Создать новую.
         var createResult = await Cli.Wrap("sc.exe")
@@ -116,7 +112,7 @@ public class ServiceInstaller
         return true;
     }
 
-    public async Task<bool> StartServiceAsync()
+    public static async Task<bool> StartServiceAsync()
     {
         if (!OperatingSystem.IsWindows()) return false;
 
@@ -128,17 +124,6 @@ public class ServiceInstaller
         return result.ExitCode == 0 || result.StandardOutput.Contains("RUNNING");
     }
 
-    private async Task StopServiceAsync()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        await Cli.Wrap("sc.exe")
-            .WithArguments($"stop {ServiceName}")
-            .WithValidation(CommandResultValidation.None)
-            .ExecuteBufferedAsync();
-    }
-
     public async Task<bool> UninstallServiceAsync()
     {
         if (!OperatingSystem.IsWindows())
@@ -146,14 +131,110 @@ public class ServiceInstaller
         if (!IsRunningAsAdmin())
             return false;
 
-        await StopServiceAsync();
-        await Task.Delay(1500);
+        // Остановить и дождаться остановки.
+        var stopped = await StopServiceAndWaitAsync();
+        if (!stopped)
+            return false;
 
+        // Удалить.
         var result = await Cli.Wrap("sc.exe")
             .WithArguments($"delete {ServiceName}")
             .WithValidation(CommandResultValidation.None)
             .ExecuteBufferedAsync();
 
-        return result.ExitCode == 0;
+        if (result.ExitCode != 0)
+            return false;
+
+        // Убедиться, что служба действительно исчезла.
+        // Иногда sc delete возвращает 0, но служба в статусе DELETE_PENDING.
+        for (var i = 0; i < 20; i++)
+        {
+            await Task.Delay(500);
+            if (!await IsServiceInstalledAsync())
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Останавливает службу и ждёт, пока она перейдёт в состояние "Stopped".
+    /// Если за 10 секунд не остановилась — принудительно убивает процесс.
+    /// </summary>
+    private async Task<bool> StopServiceAndWaitAsync()
+    {
+        // Отправка команды stop.
+        await Cli.Wrap("sc.exe")
+            .WithArguments($"stop {ServiceName}")
+            .WithValidation(CommandResultValidation.None)
+            .ExecuteBufferedAsync();
+
+        // Ожидание до 10 секунд с проверкой состояния через WMI (локализационно-независимо).
+        for (var i = 0; i < 20; i++)
+        {
+            var state = await GetServiceStateAsync();
+            if (state == "Stopped")
+                return true;
+
+            await Task.Delay(500);
+        }
+
+        // Если не остановилась, то принудительное убийство процесса.
+        var pid = await GetServiceProcessIdAsync();
+        if (pid > 0)
+        {
+            await Cli.Wrap("taskkill")
+                .WithArguments($"/PID {pid} /F")
+                .WithValidation(CommandResultValidation.None)
+                .ExecuteBufferedAsync();
+
+            // Дать системе освободить handle.
+            await Task.Delay(2000);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Возвращает состояние службы через WMI: "Running", "Stopped", "Stop Pending" и т.д.
+    /// Локализационно-независимый способ — не парсит вывод sc.exe.
+    /// </summary>
+    private async Task<string> GetServiceStateAsync()
+    {
+        try
+        {
+            var result = await Cli.Wrap("powershell")
+                .WithArguments(
+                    $"-NoProfile -Command \"(Get-CimInstance Win32_Service -Filter \\\"Name='{ServiceName}'\\\").State\"")
+                .WithValidation(CommandResultValidation.None)
+                .ExecuteBufferedAsync();
+
+            return result.StandardOutput.Trim();
+        }
+        catch
+        {
+            return "Unknown";
+        }
+    }
+
+    /// <summary>
+    /// Возвращает PID процесса службы через WMI или 0, если не удалось.
+    /// </summary>
+    private static async Task<int> GetServiceProcessIdAsync()
+    {
+        try
+        {
+            var result = await Cli.Wrap("powershell")
+                .WithArguments(
+                    $"-NoProfile -Command \"(Get-CimInstance Win32_Service -Filter \\\"Name='{ServiceName}'\\\").ProcessId\"")
+                .WithValidation(CommandResultValidation.None)
+                .ExecuteBufferedAsync();
+
+            return int.TryParse(result.StandardOutput.Trim(), out var pid) ? pid : 0;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 }

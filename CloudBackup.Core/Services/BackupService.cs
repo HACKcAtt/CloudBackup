@@ -20,7 +20,7 @@ public class BackupService : IBackupService
         return Task.FromResult(sourceSize <= freeSpace);
     }
 
-    public async Task PerformBackupAsync(AppConfig config)
+    public async Task PerformBackupAsync(AppConfig config, CancellationToken cancellationToken = default)
     {
         var sourceName = new DirectoryInfo(config.SourceFolder).Name;
         if (string.IsNullOrEmpty(sourceName))
@@ -32,18 +32,24 @@ public class BackupService : IBackupService
 
         var targetPath = Path.Combine(targetRoot, sourceName);
 
-        // CreateDirectory НЕ очищает папку, если она уже есть, то гарантирует, что она существует.
         Directory.CreateDirectory(targetPath);
 
-        await CopyDirectoryAsync(config.SourceFolder, targetPath);
+        await CopyDirectoryAsync(config.SourceFolder, targetPath, cancellationToken);
     }
 
-    private static async Task CopyDirectoryAsync(string sourceDir, string targetDir)
+    private static async Task CopyDirectoryAsync(
+        string sourceDir,
+        string targetDir,
+        CancellationToken cancellationToken)
     {
-        Directory.CreateDirectory(targetDir);   // Не трогает существующее.
+        cancellationToken.ThrowIfCancellationRequested();
+
+        Directory.CreateDirectory(targetDir);
 
         foreach (var file in Directory.GetFiles(sourceDir))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var fileName = Path.GetFileName(file);
             var targetFile = Path.Combine(targetDir, fileName);
 
@@ -54,7 +60,7 @@ public class BackupService : IBackupService
                 var targetInfo = new FileInfo(targetFile);
 
                 if (sourceInfo.LastWriteTime <= targetInfo.LastWriteTime && sourceInfo.Length == targetInfo.Length)
-                    shouldCopy = false;   // Пропуск идентичных файлов.
+                    shouldCopy = false;
             }
 
             if (shouldCopy)
@@ -67,11 +73,14 @@ public class BackupService : IBackupService
             }
         }
 
+        // Рекурсия по подпапкам.
         foreach (var directory in Directory.GetDirectories(sourceDir))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var dirName = Path.GetFileName(directory);
             var targetSubDir = Path.Combine(targetDir, dirName);
-            await CopyDirectoryAsync(directory, targetSubDir);
+            await CopyDirectoryAsync(directory, targetSubDir, cancellationToken);
         }
     }
 
