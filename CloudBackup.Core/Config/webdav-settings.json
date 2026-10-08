@@ -1,0 +1,15 @@
+{
+  "webDavUrl": "https://webdav.cloud.mail.ru",
+  "defaultWindowsDriveLetter": "Z:",
+  "defaultLinuxMountPoint": "/mnt/mailru_cloud",
+  "propfindMethod": "PROPFIND",
+  "depthHeader": "0",
+  "quotaAvailableElementName": "quota-available-bytes",
+  "requestTimeoutSeconds": 30,
+  "backupSubfolderName": "Backup",
+  "authScheme": "Basic",
+  "windowsMountCommand": "net",
+  "linuxMountCommand": "mount",
+  "linuxUnmountCommand": "umount",
+  "linuxFileSystemType": "davfs"
+}

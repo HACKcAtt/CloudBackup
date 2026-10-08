@@ -1,0 +1,164 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CloudBackup.App.ViewModels"
+        xmlns:svc="using:CloudBackup.App.Services"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="CloudBackup.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/icon.ico"
+        Title="{Binding [App_Title], Source={x:Static svc:LocalizationManager.Instance}}"
+        Width="640" Height="760"
+        MinWidth="560" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+
+    <ScrollViewer>
+        <StackPanel Margin="25" Spacing="15">
+
+            <!-- ============ Кнопки языка ============ -->
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="6">
+                <Button Content="{Binding [Lang_Ru], Source={x:Static svc:LocalizationManager.Instance}}"
+                        Command="{Binding SwitchToRussianCommand}"
+                        Padding="10,4" FontSize="11"/>
+                <Button Content="{Binding [Lang_En], Source={x:Static svc:LocalizationManager.Instance}}"
+                        Command="{Binding SwitchToEnglishCommand}"
+                        Padding="10,4" FontSize="11"/>
+            </StackPanel>
+
+            <!-- ============ Заголовок ============ -->
+            <TextBlock Text="{Binding [Header_Title], Source={x:Static svc:LocalizationManager.Instance}}"
+                       FontSize="20" FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="{Binding [Header_Subtitle], Source={x:Static svc:LocalizationManager.Instance}}"
+                       FontSize="11" Foreground="Gray"
+                       TextAlignment="Center" TextWrapping="Wrap"
+                       Margin="0,0,0,10"/>
+
+            <Separator/>
+
+            <!-- ============ Email ============ -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding [Label_Email], Source={x:Static svc:LocalizationManager.Instance}}"
+                           FontWeight="Bold"/>
+                <TextBox Text="{Binding Email}"
+                         Watermark="{Binding [Placeholder_Email], Source={x:Static svc:LocalizationManager.Instance}}"
+                         IsEnabled="{Binding !IsBusy}"/>
+            </StackPanel>
+
+            <!-- ============ Пароль ============ -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding [Label_Password], Source={x:Static svc:LocalizationManager.Instance}}"
+                           FontWeight="Bold"/>
+                <TextBox Text="{Binding Password}"
+                         PasswordChar="●"
+                         Watermark="{Binding [Placeholder_Password], Source={x:Static svc:LocalizationManager.Instance}}"
+                         IsEnabled="{Binding !IsBusy}"/>
+                <TextBlock Text="{Binding [Label_PasswordHint], Source={x:Static svc:LocalizationManager.Instance}}"
+                           FontSize="10" Foreground="OrangeRed"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <Separator/>
+
+            <!-- ============ Выбор папки ============ -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding [Label_SourceFolder], Source={x:Static svc:LocalizationManager.Instance}}"
+                           FontWeight="Bold"/>
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBox Grid.Column="0"
+                             Text="{Binding SourceFolder}"
+                             IsReadOnly="True"
+                             Watermark="{Binding [Placeholder_FolderNotSelected], Source={x:Static svc:LocalizationManager.Instance}}"/>
+                    <Button Grid.Column="1"
+                            Content="{Binding [Button_Browse], Source={x:Static svc:LocalizationManager.Instance}}"
+                            Command="{Binding SelectFolderCommand}"
+                            IsEnabled="{Binding !IsBusy}"
+                            Margin="8,0,0,0"/>
+                </Grid>
+                <TextBlock Text="{Binding SourceSizeInfo}"
+                           FontSize="11" Foreground="Gray"
+                           IsVisible="{Binding SourceSizeInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+            </StackPanel>
+
+            <!-- ============ Расписание ============ -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding [Label_Schedule], Source={x:Static svc:LocalizationManager.Instance}}"
+                           FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding IntervalKeys}"
+                          SelectedItem="{Binding SelectedIntervalKey}"
+                          HorizontalAlignment="Stretch"
+                          IsEnabled="{Binding !IsBusy}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={x:Static svc:LocKeyConverter.Instance}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <Separator/>
+
+            <!-- ============ Инфо о свободном месте ============ -->
+            <Border Background="#F0F8FF"
+                    BorderBrush="#B0C4DE"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="10"
+                    IsVisible="{Binding FreeSpaceInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding FreeSpaceInfo}"
+                           Foreground="#1E90FF"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"/>
+            </Border>
+
+            <!-- ============ Статус ============ -->
+            <Border Background="#F5F5F5"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="10">
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="#333333"
+                           TextWrapping="Wrap"/>
+            </Border>
+
+            <!-- ============ Кнопки ============ -->
+            <Button Content="{Binding [Button_TestConnection], Source={x:Static svc:LocalizationManager.Instance}}"
+                    Command="{Binding TestConnectionCommand}"
+                    IsEnabled="{Binding !IsBusy}"
+                    Padding="12,6"
+                    HorizontalAlignment="Center"/>
+
+            <Button Content="{Binding [Button_InstallService], Source={x:Static svc:LocalizationManager.Instance}}"
+                    Command="{Binding InstallAndRunServiceCommand}"
+                    IsEnabled="{Binding !IsBusy}"
+                    Background="#4CAF50"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    Height="44"
+                    HorizontalAlignment="Stretch"/>
+
+            <Button Content="{Binding [Button_UninstallService], Source={x:Static svc:LocalizationManager.Instance}}"
+                    Command="{Binding UninstallServiceCommand}"
+                    IsEnabled="{Binding !IsBusy}"
+                    Background="Transparent"
+                    Foreground="#B22222"
+                    HorizontalAlignment="Center"
+                    FontSize="11"
+                    Padding="8,4"/>
+
+            <!-- ============ Подсказка внизу ============ -->
+            <TextBlock Text="{Binding [Hint_ServiceAutostart], Source={x:Static svc:LocalizationManager.Instance}}"
+                       FontSize="11"
+                       Foreground="Gray"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,10,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>

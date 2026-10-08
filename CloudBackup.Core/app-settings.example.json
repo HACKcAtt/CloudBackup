@@ -1,0 +1,7 @@
+{
+  "sourceFolder": "",
+  "intervalSeconds": 3600,
+  "driveLetter": "Z:",
+  "mountPoint": "/mnt/mailru_cloud",
+  "isConfigured": false
+}

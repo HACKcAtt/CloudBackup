@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="App_Title" xml:space="preserve"><value>Cloud Mail.ru Backup</value></data>
+  <data name="Header_Title" xml:space="preserve"><value>Резервное копирование в Облако Mail.ru</value></data>
+  <data name="Header_Subtitle" xml:space="preserve"><value>Настройте один раз — бэкап работает всегда, даже после перезагрузки компьютера.</value></data>
+  <data name="Label_Email" xml:space="preserve"><value>Email от аккаунта Mail.ru</value></data>
+  <data name="Label_Password" xml:space="preserve"><value>Пароль для внешнего приложения</value></data>
+  <data name="Label_PasswordHint" xml:space="preserve"><value>⚠️ Используйте пароль для внешнего приложения, а не основной пароль от почты.</value></data>
+  <data name="Label_SourceFolder" xml:space="preserve"><value>Папка для бэкапа</value></data>
+  <data name="Label_Schedule" xml:space="preserve"><value>Расписание бэкапа</value></data>
+  <data name="Button_Browse" xml:space="preserve"><value>Выбрать...</value></data>
+  <data name="Button_TestConnection" xml:space="preserve"><value>🔍 Проверить соединение</value></data>
+  <data name="Button_InstallService" xml:space="preserve"><value>🚀 Установить и запустить службу</value></data>
+  <data name="Button_UninstallService" xml:space="preserve"><value>🗑 Удалить службу</value></data>
+  <data name="Placeholder_Email" xml:space="preserve"><value>user@mail.ru</value></data>
+  <data name="Placeholder_Password" xml:space="preserve"><value>Пароль из настроек Mail.ru</value></data>
+  <data name="Placeholder_FolderNotSelected" xml:space="preserve"><value>Папка не выбрана</value></data>
+  <data name="Hint_ServiceAutostart" xml:space="preserve"><value>После установки служба будет работать автоматически при включении компьютера, даже если вы закроете это окно.</value></data>
+  <data name="Status_Initial" xml:space="preserve"><value>Заполните поля и нажмите «Установить и запустить службу».</value></data>
+  <data name="Status_CheckingConnection" xml:space="preserve"><value>Проверка соединения и свободного места...</value></data>
+  <data name="Status_CheckingFreeSpace" xml:space="preserve"><value>Проверка свободного места...</value></data>
+  <data name="Status_ConnectionOk" xml:space="preserve"><value>✅ Соединение успешно!</value></data>
+  <data name="Status_ConnectionFailed" xml:space="preserve"><value>❌ Ошибка: неверный Email или пароль.</value></data>
+  <data name="Status_ConfigSaved" xml:space="preserve"><value>Настройки сохранены. Установка службы...</value></data>
+  <data name="Status_AdminRequired" xml:space="preserve"><value>Требуются права администратора. Подтвердите запрос UAC...</value></data>
+  <data name="Status_UacPrompt" xml:space="preserve"><value>Если появилось окно UAC — подтвердите его. Затем окно можно закрыть.</value></data>
+  <data name="Status_ServiceInstalledOk" xml:space="preserve"><value>✅ Служба установлена и запущена. Окно можно закрыть — бэкап работает в фоне.</value></data>
+  <data name="Status_ServiceInstalledFailed" xml:space="preserve"><value>⚠️ Служба установлена, но не запустилась. Проверьте логи.</value></data>
+  <data name="Status_ServiceInstallError" xml:space="preserve"><value>❌ Ошибка установки службы.</value></data>
+  <data name="Status_ServiceUninstalled" xml:space="preserve"><value>Служба удалена.</value></data>
+  <data name="Status_ServiceUninstallError" xml:space="preserve"><value>Ошибка удаления службы.</value></data>
+  <data name="Status_FolderEmpty" xml:space="preserve"><value>Выберите папку для бэкапа.</value></data>
+  <data name="Status_FolderNotExist" xml:space="preserve"><value>Указанная папка не существует.</value></data>
+  <data name="Status_EmailPasswordEmpty" xml:space="preserve"><value>Введите Email и пароль.</value></data>
+  <data name="Status_LinuxManualSetup" xml:space="preserve"><value>✅ Настройки сохранены. На Linux служба настраивается через systemd вручную.</value></data>
+  <data name="Status_SpaceWarning" xml:space="preserve"><value>⚠️ Внимание! Размер папки ({0}) превышает свободное место в облаке ({1}). Возможны проблемы с бэкапом.</value></data>
+  <data name="Info_FreeSpace" xml:space="preserve"><value>Свободно в облаке: {0}</value></data>
+  <data name="Info_FreeSpaceUnknown" xml:space="preserve"><value>Свободное место: не удалось определить</value></data>
+  <data name="Info_SourceSize" xml:space="preserve"><value>Размер папки: {0}</value></data>
+  <data name="Interval_1Minute" xml:space="preserve"><value>1 минута</value></data>
+  <data name="Interval_30Minutes" xml:space="preserve"><value>30 минут</value></data>
+  <data name="Interval_1Hour" xml:space="preserve"><value>1 час</value></data>
+  <data name="Interval_3Hours" xml:space="preserve"><value>3 часа</value></data>
+  <data name="Interval_6Hours" xml:space="preserve"><value>6 часов</value></data>
+  <data name="Interval_12Hours" xml:space="preserve"><value>12 часов</value></data>
+  <data name="Interval_24Hours" xml:space="preserve"><value>24 часа</value></data>
+  <data name="Interval_7Days" xml:space="preserve"><value>7 дней</value></data>
+  <data name="Interval_30Days" xml:space="preserve"><value>30 дней</value></data>
+  <data name="Lang_Ru" xml:space="preserve"><value>RU</value></data>
+  <data name="Lang_En" xml:space="preserve"><value>EN</value></data>
+  <data name="Status_ServiceAlreadyRunning" xml:space="preserve"><value>✅ Служба уже установлена и работает.</value></data>
+  <data name="Status_ServiceInstalledButStopped" xml:space="preserve"><value>⚠️ Служба установлена, но не запущена. Нажмите «Установить и запустить службу», чтобы запустить её.</value></data>
+  <data name="Status_ServiceNotInstalled" xml:space="preserve"><value>Служба не установлена.</value></data>
+  <data name="Alert_Title_Error" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="Alert_Title_Warning" xml:space="preserve"><value>Внимание</value></data>
+  <data name="Alert_Title_Confirm" xml:space="preserve"><value>Подтверждение</value></data>
+  <data name="Confirm_UninstallService" xml:space="preserve"><value>Вы уверены, что хотите удалить службу бэкапа? Автоматическое резервное копирование остановится.</value></data>
+  <data name="Status_ServiceLinuxUninstallHint" xml:space="preserve"><value>На Linux управление службой выполняется через systemd. Используйте: sudo systemctl disable --now cloud-backup</value></data>
+  <data name="Status_EmailEmpty" xml:space="preserve"><value>Введите Email от аккаунта Mail.ru.</value></data>
+  <data name="Status_PasswordEmpty" xml:space="preserve"><value>Введите пароль для внешнего приложения.</value></data>
+  <data name="Status_EmailInvalidFormat" xml:space="preserve"><value>Формат Email выглядит неверным. Пример: user@mail.ru</value></data>
+</root>

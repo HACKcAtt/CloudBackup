@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="App_Title" xml:space="preserve">
+    <value>Cloud Mail.ru Backup</value>
+  </data>
+  <data name="Header_Title" xml:space="preserve">
+    <value>Backup to Mail.ru Cloud</value>
+  </data>
+  <data name="Header_Subtitle" xml:space="preserve">
+    <value>Configure once — backup works forever, even after reboot.</value>
+  </data>
+  <data name="Label_Email" xml:space="preserve">
+    <value>Mail.ru account email</value>
+  </data>
+  <data name="Label_Password" xml:space="preserve">
+    <value>External app password</value>
+  </data>
+  <data name="Label_PasswordHint" xml:space="preserve">
+    <value>⚠️ Use an external app password, not your main email password.</value>
+  </data>
+  <data name="Label_SourceFolder" xml:space="preserve">
+    <value>Folder to backup</value>
+  </data>
+  <data name="Label_Schedule" xml:space="preserve">
+    <value>Backup schedule</value>
+  </data>
+  <data name="Button_Browse" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="Button_TestConnection" xml:space="preserve">
+    <value>🔍 Test connection</value>
+  </data>
+  <data name="Button_InstallService" xml:space="preserve">
+    <value>🚀 Install and start service</value>
+  </data>
+  <data name="Button_UninstallService" xml:space="preserve">
+    <value>🗑 Uninstall service</value>
+  </data>
+  <data name="Placeholder_Email" xml:space="preserve">
+    <value>user@mail.ru</value>
+  </data>
+  <data name="Placeholder_Password" xml:space="preserve">
+    <value>External app password</value>
+  </data>
+  <data name="Placeholder_FolderNotSelected" xml:space="preserve">
+    <value>Folder not selected</value>
+  </data>
+  <data name="Hint_ServiceAutostart" xml:space="preserve">
+    <value>The service will run automatically at system startup, even if you close this window.</value>
+  </data>
+  <data name="Status_Initial" xml:space="preserve">
+    <value>Fill in the fields and click "Install and start service".</value>
+  </data>
+  <data name="Status_CheckingConnection" xml:space="preserve">
+    <value>Checking connection...</value>
+  </data>
+  <data name="Status_CheckingFreeSpace" xml:space="preserve">
+    <value>Checking free space...</value>
+  </data>
+  <data name="Status_ConnectionOk" xml:space="preserve">
+    <value>✅ Connection successful!</value>
+  </data>
+  <data name="Status_ConnectionFailed" xml:space="preserve">
+    <value>❌ Error: invalid email or password.</value>
+  </data>
+  <data name="Status_ConfigSaved" xml:space="preserve">
+    <value>Settings saved. Installing service...</value>
+  </data>
+  <data name="Status_AdminRequired" xml:space="preserve">
+    <value>Administrator rights required. Confirm the UAC prompt...</value>
+  </data>
+  <data name="Status_UacPrompt" xml:space="preserve">
+    <value>If the UAC window appeared, confirm it. Then you can close this window.</value>
+  </data>
+  <data name="Status_ServiceInstalledOk" xml:space="preserve">
+    <value>✅ Service installed and started. You can close this window.</value>
+  </data>
+  <data name="Status_ServiceInstalledFailed" xml:space="preserve">
+    <value>⚠️ Service installed but failed to start. Check logs.</value>
+  </data>
+  <data name="Status_ServiceInstallError" xml:space="preserve">
+    <value>❌ Failed to install service.</value>
+  </data>
+  <data name="Status_ServiceUninstalled" xml:space="preserve">
+    <value>Service uninstalled.</value>
+  </data>
+  <data name="Status_ServiceUninstallError" xml:space="preserve">
+    <value>Failed to uninstall service.</value>
+  </data>
+  <data name="Status_FolderEmpty" xml:space="preserve">
+    <value>Select a folder to backup.</value>
+  </data>
+  <data name="Status_FolderNotExist" xml:space="preserve">
+    <value>Selected folder does not exist.</value>
+  </data>
+  <data name="Status_EmailPasswordEmpty" xml:space="preserve">
+    <value>Enter email and password.</value>
+  </data>
+  <data name="Status_LinuxManualSetup" xml:space="preserve">
+    <value>✅ Settings saved. On Linux, service is configured manually via systemd.</value>
+  </data>
+  <data name="Status_SpaceWarning" xml:space="preserve">
+    <value>⚠️ Warning! Folder size ({0}) exceeds free cloud space ({1}). Backup may fail.</value>
+  </data>
+  <data name="Info_FreeSpace" xml:space="preserve">
+    <value>Free cloud space: {0}</value>
+  </data>
+  <data name="Info_FreeSpaceUnknown" xml:space="preserve">
+    <value>Free space: unable to determine</value>
+  </data>
+  <data name="Info_SourceSize" xml:space="preserve">
+    <value>Folder size: {0}</value>
+  </data>
+  <data name="Interval_1Minute" xml:space="preserve">
+    <value>1 minute</value>
+  </data>
+  <data name="Interval_30Minutes" xml:space="preserve">
+    <value>30 minutes</value>
+  </data>
+  <data name="Interval_1Hour" xml:space="preserve">
+    <value>1 hour</value>
+  </data>
+  <data name="Interval_3Hours" xml:space="preserve">
+    <value>3 hours</value>
+  </data>
+  <data name="Interval_6Hours" xml:space="preserve">
+    <value>6 hours</value>
+  </data>
+  <data name="Interval_12Hours" xml:space="preserve">
+    <value>12 hours</value>
+  </data>
+  <data name="Interval_24Hours" xml:space="preserve">
+    <value>24 hours</value>
+  </data>
+  <data name="Interval_7Days" xml:space="preserve">
+    <value>7 days</value>
+  </data>
+  <data name="Interval_30Days" xml:space="preserve">
+    <value>30 days</value>
+  </data>
+  <data name="Lang_Ru" xml:space="preserve">
+    <value>RU</value>
+  </data>
+  <data name="Lang_En" xml:space="preserve">
+    <value>EN</value>
+  </data>
+  <data name="Status_ServiceAlreadyRunning" xml:space="preserve">
+  <value>✅ Service is already installed and running.</value>
+</data>
+  <data name="Status_ServiceInstalledButStopped" xml:space="preserve">
+  <value>⚠️ Service is installed but not running. Click "Install and start service" to start it.</value>
+</data>
+  <data name="Status_ServiceNotInstalled" xml:space="preserve">
+  <value>Service is not installed.</value>
+</data>
+  <data name="Alert_Title_Error" xml:space="preserve">
+  <value>Error</value>
+</data>
+  <data name="Alert_Title_Warning" xml:space="preserve">
+  <value>Warning</value>
+</data>
+  <data name="Alert_Title_Confirm" xml:space="preserve">
+  <value>Confirmation</value>
+</data>
+  <data name="Confirm_UninstallService" xml:space="preserve">
+  <value>Are you sure you want to remove the backup service? This will stop automatic backups.</value>
+</data>
+  <data name="Status_ServiceLinuxUninstallHint" xml:space="preserve">
+  <value>On Linux, service management is done via systemd. Use: sudo systemctl disable --now cloud-backup</value>
+</data>
+  <data name="Status_EmailEmpty" xml:space="preserve">
+  <value>Please enter your Mail.ru email.</value>
+</data>
+  <data name="Status_PasswordEmpty" xml:space="preserve">
+  <value>Please enter the external app password.</value>
+</data>
+  <data name="Status_EmailInvalidFormat" xml:space="preserve">
+  <value>Email format looks invalid. Example: user@mail.ru</value>
+</data>
+</root>

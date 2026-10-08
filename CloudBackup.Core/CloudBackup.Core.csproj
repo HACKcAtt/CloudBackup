@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CliWrap" Version="3.10.5" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+      <PackageReference Include="Serilog.Sinks.File" Version="8.0.0-nblumhardt-02322" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Config\webdav-settings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
